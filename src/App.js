@@ -11,6 +11,7 @@ import { auth,createUserProfileDocument } from './firebase/firebase.utils';
 import { createStructuredSelector } from 'reselect';
 import { setCurrentUser } from './redux/user/user.actions';
 import { selectCurrentUser } from './redux/user/user.selector';
+import { toggleCartHidden } from './redux/cart/cart.actions';
  
 class App extends React.Component {
   unsubscribeFromAuth = null;
@@ -38,9 +39,13 @@ class App extends React.Component {
   }
 
   render() {
-    const { currentUser } =this.props;
+    const { currentUser, toggleCartHidden } =this.props;
     return (
-      <div className="App">
+      <div className="App" onClick={(e)=>{
+        if(e.target.className !== 'item-count'){
+          toggleCartHidden(true);
+        }
+      }}>
         <Header />
         <Switch>
           <Route exact path="/" component={Homepage} />
@@ -60,7 +65,8 @@ const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser
 });
 
-const mapDispatchToProps = dispacth => ({
-  setCurrentUser : user => dispacth(setCurrentUser(user))
-});
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps,
+   {
+  setCurrentUser,
+  toggleCartHidden
+})(App);
